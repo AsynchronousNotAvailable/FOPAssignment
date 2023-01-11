@@ -19,4 +19,8 @@ public class test {
             }
         }
     }
+
+    static void testing(){
+        System.out.println("this is a testing function");
+    }
 }
