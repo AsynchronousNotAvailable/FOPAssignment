@@ -11,7 +11,7 @@ public class FindOperations {
             try {
 
                 // Read file
-                BufferedReader fileIn = new BufferedReader(new FileReader("./src/extracted_log"));
+                BufferedReader fileIn = new BufferedReader(new FileReader("./src/extracted_log.txt"));
                 PrintWriter fileOut = new PrintWriter(new FileWriter("./src/job_type.txt"));
 
                 // Variable declarations
