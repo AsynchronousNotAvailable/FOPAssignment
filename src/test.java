@@ -25,4 +25,8 @@ public class test {
         }
         System.out.println(partitionList);
     }
+
+    static void testing(){
+        System.out.println("this is a testing function");
+    }
 }
