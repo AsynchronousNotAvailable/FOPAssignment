@@ -7,10 +7,7 @@ import java.io.*;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.Scanner;
+import java.util.*;
 
 
 public class SplitLogFile {
@@ -79,7 +76,8 @@ public class SplitLogFile {
         //the number of occurrence of jobID between the time range will be counted and added into LinkedHashMap as VALUE
         String [] submit = {};
         LinkedHashMap<String, Integer> submitJob = new LinkedHashMap<>();
-        ArrayList<String> filter = new ArrayList<>();
+        ArrayList<String> filter = new ArrayList<>(); //same as normal array, but size is changable
+
 
 
         try{
@@ -104,6 +102,7 @@ public class SplitLogFile {
 
                 if((sentence.contains("done"))){
                     submit = sentence.split(" ");
+                    System.out.println(Arrays.toString(submit));
                     for(int i = 0; i < submit.length; i++){
                         if(submit[i].contains("JobId")){
                             String jobID = submit[i].substring(6);
@@ -118,12 +117,13 @@ public class SplitLogFile {
                     }
                 }
             }
-            for(String jobID: submitJob.keySet()){
-                if(submitJob.get(jobID) == 2){
-                    filter.add(jobID);
-
-                }
-            }
+            System.out.println(submitJob);
+//            for(String jobID: submitJob.keySet()){
+//                if(submitJob.get(jobID) == 2){
+//                    filter.add(jobID);
+//
+//                }
+//            }
         }
         catch(FileNotFoundException e){
             System.out.println(e.getMessage());
