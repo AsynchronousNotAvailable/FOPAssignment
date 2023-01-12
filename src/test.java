@@ -4,6 +4,7 @@ import java.util.regex.Pattern;
 
 public class test {
     public static void main(String[] args) {
+        System.out.println("try again");
         System.out.println("kk");
         System.out.println("Hello");
         String s = "2022-3-14";
