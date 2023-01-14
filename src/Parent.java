@@ -7,7 +7,7 @@ public class Parent {
     }
 
     public static void main(String[] args) {
-        metrics_1 c = new metrics_1();
+        metrics1 c = new metrics1();
         System.out.println(c.numSubmit);
     }
 }

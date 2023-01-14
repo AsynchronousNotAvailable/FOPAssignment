@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
-public class metrics_1 {
+public class metrics1 {
     protected LinkedHashMap<String, Integer> submitJob;
     protected LinkedHashMap<String, Integer> completeJob;
     protected LinkedHashMap<String, Integer> uncompleteJob;
@@ -14,7 +14,7 @@ public class metrics_1 {
     protected String startDate; protected String endDate;
 
 //    constructor
-    public metrics_1(){
+    public metrics1(){
         LinkedHashMap <String, Integer> submitJobList = new LinkedHashMap<>();
         LinkedHashMap <String, Integer> completeJobList = new LinkedHashMap<>();
         LinkedHashMap <String, Integer> uncompleteJobList = new LinkedHashMap<>();
@@ -33,7 +33,7 @@ public class metrics_1 {
     }
     public static void main(String[] args) {
 
-        metrics_1 obj = new metrics_1();
+        metrics1 obj = new metrics1();
         obj.checkJobStatus();
         obj.displayStatus();
 
@@ -161,7 +161,6 @@ public class metrics_1 {
         return a;
     }
 
-
     public void checkJobStatus(){
         Scanner sc = new Scanner(System.in);
         System.out.println("Enter jobID to check job completion status: ");
@@ -215,6 +214,8 @@ public class metrics_1 {
 
 
     }
+
+
 //    local method
     private static String process(String s){
         if(s.contains("T")){

@@ -40,9 +40,4 @@ public class metrics2 {
     }
 }
 
-class Tester{
-    public static void main(String[] args) {
-        metrics2 obj= new metrics2();
-        obj.readFile();
-    }
-}
+

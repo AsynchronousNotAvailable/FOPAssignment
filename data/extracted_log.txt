@@ -3556,7 +3556,7 @@
 [2022-06-14T14:40:49.077] sched: Allocate JobId=43765 NodeList=gpu04 #CPUs=2 Partition=gpu-k40c
 [2022-06-14T14:41:09.353] _slurm_rpc_kill_job: REQUEST_KILL_JOB JobId=43765 uid 548200003
 [2022-06-14T14:42:39.686] _job_complete: JobId=43764 WTERMSIG 126
-[2022-06-14T14:42:39.686] _job_complete: JobId=43764 cancelled by interactive user
+[2022-06-14T14:42:39.686] _job_complete: JobId=43764 cancelled by interactive
 [2022-06-14T14:42:39.686] _job_complete: JobId=43764 done
 [2022-06-14T14:48:33.963] _slurm_rpc_submit_batch_job: JobId=43766 InitPrio=25823 usec=345
 [2022-06-14T14:48:34.033] sched: Allocate JobId=43766 NodeList=gpu03 #CPUs=16 Partition=gpu-k10
