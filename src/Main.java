@@ -6,9 +6,12 @@ public class Main {
 //        metrics3 findJobError = new metrics3();
 //        findJobError.findError();
 
-        metrics4 excecutionTime = new metrics4();
-        System.out.println(excecutionTime.startExecTime.size());
-        System.out.println(excecutionTime.endExecTime.size());
-        System.out.println(excecutionTime.noEndExecTime.size());
+//        metrics4 excecutionTime = new metrics4();
+//        System.out.println(excecutionTime.startExecTime.size());
+//        System.out.println(excecutionTime.endExecTime.size());
+//        System.out.println(excecutionTime.noEndExecTime.size());
+        metrics4a obj = new metrics4a();
+        obj.findExecTime();
+
     }
 }

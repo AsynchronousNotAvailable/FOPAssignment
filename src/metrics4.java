@@ -1,18 +1,23 @@
 import java.io.*;
+import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.LinkedHashMap;
 
 public class metrics4 {
+    //instance variables
     protected LinkedHashMap<String, String> startExecTime = new LinkedHashMap<>();
     protected LinkedHashMap<String, String> endExecTime = new LinkedHashMap<>();
     protected LinkedHashMap<String, String> noEndExecTime = new LinkedHashMap<>();
 
-
+    //constructor
     public metrics4(){
-        executionTime();
+        generateTime();
 
     }
-    public void executionTime(){
+    //parse start time, end time, and noEndTimeExecution into LinkedHashMap
+    public void generateTime(){
         try{
             BufferedReader inputStream = new BufferedReader(new FileReader("./data/extracted_log.txt"));
             String dummy;
@@ -50,12 +55,52 @@ public class metrics4 {
 
     }
 
+    //startTime minus endTime
+    public void findExecTime(){
+        LinkedHashMap<String, String> startExecTime = getStartExecTime();
+        LinkedHashMap<String, String> endExecTime = getEndExecTime();
+        LinkedHashMap<String, Long> execTime = new LinkedHashMap<>();
+
+        for(String code: startExecTime.keySet()){
+            if(endExecTime.containsKey(code)) {
+                LocalDateTime startTime = processTime(startExecTime.get(code).replace('T', ' '));
+                LocalDateTime endTime = processTime(endExecTime.get(code).replace('T', ' '));
+
+                long milliseconds = Duration.between(startTime, endTime).toMillis();
+
+                execTime.put(code, milliseconds);
+
+            }
+        }
+        System.out.printf("JobID\t\tExecution Time (milliseconds)\n");
+        for(String code: execTime.keySet()){
+            System.out.printf("%s\t\t%s\n", code, execTime.get(code));
+        }
+        System.out.println("Number of jobs with execution start time:"+getStartExecTime().size());
+        System.out.println("Number of jobs with execution end time: "+getEndExecTime().size());
+        System.out.println("Number of jobs that do not have execution end time: "+getNoEndExecTime().size());
+        System.out.println("Number of jobs that has execution time: "+execTime.size());
+    }
+
+    //convert string to LocalDateTime
+    public LocalDateTime processTime(String s){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
+
+        LocalDateTime ldt = LocalDateTime.parse(s, formatter);
+        return ldt;
+    }
+
+
+
+    //getter method
     public LinkedHashMap<String, String> getStartExecTime(){
        return this.startExecTime;
     }
+    //getter method
     public LinkedHashMap<String, String> getEndExecTime(){
         return this.endExecTime;
     }
+    //getter method
     public LinkedHashMap<String, String> getNoEndExecTime(){
         return this.noEndExecTime;
     }
