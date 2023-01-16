@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.LinkedHashMap;
+import java.util.concurrent.TimeUnit;
 
 public class metrics4 {
     //instance variables
@@ -14,7 +15,6 @@ public class metrics4 {
     //constructor
     public metrics4(){
         generateTime();
-
     }
     //parse start time, end time, and noEndTimeExecution into LinkedHashMap
     public void generateTime(){
@@ -52,7 +52,6 @@ public class metrics4 {
         catch (IOException e){
 
         }
-
     }
 
     //startTime minus endTime
@@ -72,10 +71,18 @@ public class metrics4 {
 
             }
         }
+        long totalTime = 0;
+        for (String code: execTime.keySet()){
+            totalTime += execTime.get(code);
+        }
+        totalTime /= execTime.size();
+        long hours = TimeUnit.MILLISECONDS.toHours(totalTime);
+
         System.out.printf("JobID\t\tExecution Time (milliseconds)\n");
         for(String code: execTime.keySet()){
             System.out.printf("%s\t\t%s\n", code, execTime.get(code));
         }
+        System.out.println("Average execution time: "+ hours);
         System.out.println("Number of jobs with execution start time:"+getStartExecTime().size());
         System.out.println("Number of jobs with execution end time: "+getEndExecTime().size());
         System.out.println("Number of jobs that do not have execution end time: "+getNoEndExecTime().size());

@@ -6,6 +6,9 @@ import java.util.LinkedHashMap;
 
 public class metrics3 {
 
+    public metrics3(){
+        findError();
+    }
     public void findError(){
         try{
             BufferedReader inputStream = new BufferedReader(new FileReader("./data/extracted_log.txt"));
