@@ -1,223 +1,236 @@
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.Scanner;
 
 public class metrics1 {
-    protected LinkedHashMap<String, Integer> submitJob;
-    protected LinkedHashMap<String, Integer> completeJob;
-    protected LinkedHashMap<String, Integer> uncompleteJob;
-    protected int numSubmit; protected int numComplete; protected int numUncomplete;
-    protected String startDate; protected String endDate;
-
-//    constructor
-    public metrics1(){
-        LinkedHashMap <String, Integer> submitJobList = new LinkedHashMap<>();
-        LinkedHashMap <String, Integer> completeJobList = new LinkedHashMap<>();
-        LinkedHashMap <String, Integer> uncompleteJobList = new LinkedHashMap<>();
-        Scanner sc = new Scanner(System.in);
-        System.out.println("Enter start date time:");
-        this.startDate = process(sc.nextLine());
-        System.out.println("Enter end date time:");
-        this.endDate = process(sc.nextLine());
-        this.submitJob = setSubmitJob(submitJobList);
-        this.completeJob = setCompleteJob(completeJobList);
-        this.uncompleteJob = setUncompleteJob(uncompleteJobList);
-        this.numSubmit = submitJob.size();
-        this.numComplete = completeJob.size();
-        this.numUncomplete = uncompleteJob.size();
-
-    }
     public static void main(String[] args) {
 
-        metrics1 obj = new metrics1();
-        obj.checkJobStatus();
-        obj.displayStatus();
+    }
+
+    //instance variables
+    public LinkedHashMap<String, LocalDateTime[]> startLdtWithJobId = new LinkedHashMap<>();
+    public LinkedHashMap<String, LocalDateTime[]> endLdtWithJobId = new LinkedHashMap<>();
 
 
-        System.out.println("number of submitted job: " + obj.submitJob.size());
-        System.out.println("number of completed job: " + obj.completeJob.size());
-        System.out.println("number of uncompleted job: " + obj.uncompleteJob.size());
-
+    //constructor
+    //once this object of this class is called, it will invoke the processTime() method.
+    public metrics1() {
 
     }
 
-    public LinkedHashMap<String, Integer> setSubmitJob(LinkedHashMap<String, Integer> a){
-
-        try{
-            String dummy;
-            String [] submit;
+    //this method allows user to input start time and end time, generating jobIDs being created and ended within the time range given
+    public void processTime() {
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Enter Start Date Time: ");
+        String startDate = sc.nextLine();
+        String startDateTime = formatDateTime(startDate);
+        System.out.println("Enter End Date Time: ");
+        String endDate = sc.nextLine();
+        String endDateTime = formatDateTime(endDate);
+        try {
             BufferedReader inputStream = new BufferedReader(new FileReader("./data/extracted_log.txt"));
-            while((dummy = inputStream.readLine())!=null) {
-                String[] stringElem = dummy.split(" ");
-                String time = stringElem[0].substring(1, stringElem[0].length() - 1);
-                LocalDateTime targetDate = testing(process(time));
-
-                //check if the time is within the time range
-                if (targetDate.isAfter(testing(this.startDate)) && targetDate.isBefore(testing(this.endDate))) {
-
-                    //add submitted job into submitJob
-                    if (dummy.contains("submit")) {
-                        submit = dummy.split(" ");
-                        for (int i = 0; i < submit.length; i++) {
-                            if (submit[i].contains("JobId")) {
-                                String jobID = submit[i].substring(6);
-                                if (a.containsKey(jobID)) {
-                                    a.put(jobID, a.get(jobID) + 1);
-                                } else {
-                                    a.put(jobID, 1);
-                                }
-                            }
-                        }
+            String dummy;
+            while ((dummy = inputStream.readLine()) != null) {
+                LocalDateTime[] array = new LocalDateTime[2];
+                if (dummy.contains("sched: Allocate")) {
+                    String unprocessedTime = dummy.split(" ")[0].substring(1, dummy.split(" ")[0].length() - 1);
+                    LocalDateTime processedTime = convertToLDT(formatDateTime(unprocessedTime));
+                    if (processedTime.isAfter(convertToLDT(startDateTime)) && processedTime.isBefore(convertToLDT(endDateTime))) {
+                        array[0] = processedTime;
+                        String jobID = dummy.split(" ")[3].substring(6);
+                        this.startLdtWithJobId.put(jobID, array);
                     }
 
-                    if ((dummy.contains("done"))) {
-                        submit = dummy.split(" ");
-                        for (int i = 0; i < submit.length; i++) {
-                            if (submit[i].contains("JobId")) {
-                                String jobID = submit[i].substring(6);
-                                if (a.containsKey(jobID)) {
-                                    a.put(jobID, a.get(jobID) + 1);
-                                } else {
-                                    a.put(jobID, 1);
-                                }
+                }
 
-                            }
+                if (dummy.contains("WEXITSTATUS")) {
+                    String unprocessedTime = dummy.split(" ")[0].substring(1, dummy.split(" ")[0].length() - 1);
+                    LocalDateTime processedTime = convertToLDT(formatDateTime(unprocessedTime));
+                    if (processedTime.isAfter(convertToLDT(startDateTime)) && processedTime.isBefore(convertToLDT(endDateTime))) {
+                        array[1] = processedTime;
+                        String jobID = dummy.split(" ")[2].substring(6);
+                        if (this.startLdtWithJobId.containsKey(jobID)) {
+                            this.startLdtWithJobId.get(jobID)[1] = processedTime;
+                        } else {
+                            this.startLdtWithJobId.put(jobID, array);
                         }
+
                     }
-
-
-
                 }
             }
 
 
-        }
-        catch (FileNotFoundException e){
+//            System.out.println("Number of Time Stamp of sched: Allocate with job ID: "+this.startLdtWithJobId.size());
+//            System.out.println("Number of Time Stamp of WEXITSTATUS with job ID: "+this.endLdtWithJobId.size());
+        } catch (FileNotFoundException e) {
+            System.out.println(e);
+        } catch (IOException e) {
             System.out.println(e);
         }
-        catch (IOException e){
-            System.out.println(e);
-        }
-
-        return a;
     }
-    public LinkedHashMap<String, Integer> setCompleteJob(LinkedHashMap<String, Integer> a){
+
+
+    public void option1() {
+        processTime();
+        for (String code : getStartLdtWithJobId().keySet()) {
+            System.out.printf("%s\t%30s\t\t%s\n", code, getStartLdtWithJobId().get(code)[0], getStartLdtWithJobId().get(code)[1]);
+        }
+    }
+
+
+    //enter job id, check job status
+    public void option2(){
+        //take in all jobId from file
         try{
-            String dummy;
-            String [] submit;
-            LinkedHashMap<String, Integer> completeJob = new LinkedHashMap<>();
             BufferedReader inputStream = new BufferedReader(new FileReader("./data/extracted_log.txt"));
-            while((dummy = inputStream.readLine())!=null) {
-                String[] stringElem = dummy.split(" ");
-                String time = stringElem[0].substring(1, stringElem[0].length() - 1);
-                LocalDateTime targetDate = testing(process(time));
-
-                //check if the time is within the time range
-                if (targetDate.isAfter(testing(this.startDate)) && targetDate.isBefore(testing(this.endDate))) {
-
-                    //add completed job into completeJob between time range
-                    if ((dummy.contains("done"))) {
-                        submit = dummy.split(" ");
-                        for (int i = 0; i < submit.length; i++) {
-                            if (submit[i].contains("JobId")) {
-                                String jobID = submit[i].substring(6);
-                                if (a.containsKey(jobID)) {
-                                    a.put(jobID, a.get(jobID) + 1);
-                                    a.put(jobID, a.get(jobID) + 1);
-                                } else {
-                                    a.put(jobID, 1);
-                                }
-
-                            }
-                        }
-                    }
-
-
+            String dummy;
+            while((dummy = inputStream.readLine())!= null){
+                LocalDateTime [] array = new LocalDateTime[2];
+                if(dummy.contains("sched: Allocate")){
+                    String unprocessedTime = dummy.split(" ")[0].substring(1, dummy.split(" ")[0].length()-1);
+                    LocalDateTime processedTime = convertToLDT(formatDateTime(unprocessedTime));
+                    array[0] = processedTime;
+                    String jobID = dummy.split(" ")[3].substring(6);
+                    this.startLdtWithJobId.put(jobID, array);
                 }
+
+                if(dummy.contains("WEXITSTATUS")){
+                    String unprocessedTime = dummy.split(" ")[0].substring(1, dummy.split(" ")[0].length()-1);
+                    LocalDateTime processedTime = convertToLDT(formatDateTime(unprocessedTime));
+                    array[1] = processedTime;
+                    String jobID = dummy.split(" ")[2].substring(6);
+                    if(this.startLdtWithJobId.containsKey(jobID)){
+                        this.startLdtWithJobId.get(jobID)[1] = processedTime;
+                    }
+                    else{
+                        this.startLdtWithJobId.put(jobID, array);
+                    }
+                }
+
+
             }
-
-
         }
         catch (FileNotFoundException e){
-            System.out.println(e);
+
         }
         catch (IOException e){
-            System.out.println(e);
+
         }
 
-        return a;
-    }
-    public LinkedHashMap<String, Integer> setUncompleteJob(LinkedHashMap<String, Integer> a){
-
-        for(String jobID: this.submitJob.keySet()){
-            if(this.submitJob.get(jobID) != 2){
-                a.put(jobID, submitJob.get(jobID));
-            }
-        }
-        return a;
-    }
-
-    public void checkJobStatus(){
         Scanner sc = new Scanner(System.in);
         System.out.println("Enter jobID to check job completion status: ");
         String jobId = sc.nextLine();
-        String status;
+
 
         while(!jobId.equals("-1")){
 
-            while(submitJob.containsKey(jobId)){
+            while(getStartLdtWithJobId().containsKey(jobId)){
+                String status = "";
                 if(jobId.equals("-1")){
                     System.exit(0);
                 }
-                if(uncompleteJob.containsKey(jobId)){
-                    status = "Not Completed";
-                }
-                else{
-                    status = "Completed";
+                if(getStartLdtWithJobId().containsKey(jobId)){
+                    if(getStartLdtWithJobId().get(jobId)[0] == null){
+                        status = "No Start Time. Completed";
+                    }
+                    else if(getStartLdtWithJobId().get(jobId)[1] == null){
+                        status = "No End Time. Not Completed";
+                    }
+                    else{
+                        status = "Completed";
                 }
 
-                System.out.printf("JobID\t\tStatus\n");
-                System.out.printf("%s\t\t%s\n", jobId, status);
+                }
+
+                System.out.printf("JobID\t\t\t\tStart Time\t\t\t\t\t\t\tEnd Time\t\t\t\t\tStatus\n");
+                System.out.printf("%s\t\t\t\t\t%s\t\t\t%s\t\t\t\t\t%s\n", jobId,this.startLdtWithJobId.get(jobId)[0],this.startLdtWithJobId.get(jobId)[1],  status);
                 System.out.println("Enter jobID to check job completion status: ");
                 jobId = sc.nextLine();
+                if(jobId.equals("-1")){
+                    System.exit(0);
+                }
             }
             System.out.println("No such jobID");
             System.out.println("Enter jobID to check job completion status: ");
             jobId = sc.nextLine();
-
-        }
-        System.exit(0);
-
-
-    }
-
-    public void displayStatus(){
-        String status;
-        System.out.printf("JobID\t\tStatus\n");
-        System.out.println("-------------------------");
-        for(String code: this.submitJob.keySet()){
-
-            if(this.submitJob.get(code) != 2){
-                status = "Not Completed";
-            }
-            else{
-                status = "completed";
-            }
-
-            System.out.printf("%s\t\t%s\n", code, status);
-
         }
 
 
     }
 
+    //getter method
+    public LinkedHashMap<String, LocalDateTime[]>getStartLdtWithJobId(){
+        return this.startLdtWithJobId;
+    }
 
-//    local method
-    private static String process(String s){
+    //getter method
+    public LinkedHashMap<String, LocalDateTime[]>getEndLdtWithJobId(){
+        return this.endLdtWithJobId;
+    }
+
+
+
+
+//    public void findings(){
+//        //find jobID with start time
+//        for(String code: getStartLdtWithJobId().keySet()){
+//            if(!getEndLdtWithJobId().containsKey(code)){
+//                this.startTimeOnlyList.add(code);
+////                try{
+////                    BufferedReader inputStream = new BufferedReader(new FileReader("./data/extracted_log.txt"));
+////                    System.out.println(code);
+////                    String parse;
+////                    while((parse = inputStream.readLine())!= null){
+////                        if(parse.contains(code)){
+////
+////                            System.out.println(parse);
+////
+////                        }
+////
+////
+////                    }
+////                }
+////                catch(FileNotFoundException e){
+////                    System.out.println(e);
+////                }
+////                catch (IOException e){
+////                    System.out.println(e);
+////                }
+//            }
+//
+//
+//        }
+//
+//
+////        find jobId with end time only
+//        for(String code: getEndLdtWithJobId().keySet()){
+//            if(!getStartLdtWithJobId().containsKey(code)){
+//                this.endTimeOnlyList.add(code);
+////                try{
+////                    BufferedReader inputStream = new BufferedReader(new FileReader("./data/extracted_log.txt"));
+////                    String parse;
+////                    while((parse= inputStream.readLine())!= null){
+////                        if(parse.contains(code)){
+//////                            System.out.println(parse);
+////                        }
+////                    }
+////                }
+////                catch(FileNotFoundException e){
+////                    System.out.println(e);
+////                }
+////                catch (IOException e){
+////                    System.out.println(e);
+////                }
+//            }
+//
+////                System.out.printf("%s\t\t%s\n", code, getEndLdtWithJobId().get(code));
+//        }
+//    }
+
+    //local method to process date time by user input so can be parsed into ldt method
+    public String formatDateTime(String s){
         if(s.contains("T")){
             s = s.replace('T', ' ');
             //2022-12-16 00
@@ -236,14 +249,10 @@ public class metrics1 {
         }
         return s;
     }
-//    local method
-    private static LocalDateTime testing(String s){
-//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-//        LocalDateTime dateTime = LocalDateTime.parse(s, formatter);
-//        System.out.println(dateTime);
+
+    //convert String date time to LocalDateTime
+    public LocalDateTime convertToLDT(String s){
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
-
-
 
         LocalDateTime ldt = LocalDateTime.parse(s, formatter);
         return ldt;

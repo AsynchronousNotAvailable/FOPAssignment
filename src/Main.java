@@ -1,6 +1,3 @@
-import jdk.swing.interop.SwingInterOpUtils;
-
-import java.util.Locale;
 import java.util.Scanner;
 
 public class Main {
@@ -20,7 +17,7 @@ public class Main {
             System.out.println("-1. to exit");
             String num = sc.next();
             if (num.equals("1")) {
-                optimised1 obj = new optimised1();
+                metrics1 obj = new metrics1();
                 System.out.println("Enter which option you would like proceed: ");
                 System.out.println("Press '1', '2' to proceed: ");
                 System.out.println("1. Generate number of jobs created and ended within given time range: ");
@@ -82,32 +79,6 @@ public class Main {
                System.exit(0);
             }
         }while(true);
-
-//        metrics2 findPartition= new metrics2();
-//        findPartition.readFile();
-
-//        metrics3 findJobError = new metrics3();
-//        findJobError.findError();
-
-//        metrics4 excecutionTime = new metrics4();
-//        excecutionTime.findExecTime();
-
-
-//        System.out.println(excecutionTime.startExecTime.size());
-//        System.out.println(excecutionTime.endExecTime.size());
-//        System.out.println(excecutionTime.noEndExecTime.size());
-//        metrics4a obj = new metrics4a();
-//        obj.findExecTime();
-
-
-//        metrics1a obj = new metrics1a();
-//        obj.findings();
-//        System.out.println(obj.getStartTimeOnlyList().size());
-//        System.out.println(obj.getEndTimeOnlyList().size());
-
-
-//        System.out.println(obj.getStartLdtWithJobId());
-//        System.out.println(obj.getEndLdtWithJobId());
 
 
 
