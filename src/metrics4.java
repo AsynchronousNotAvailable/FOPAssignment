@@ -1,9 +1,11 @@
 import java.io.*;
+import java.sql.SQLOutput;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.LinkedHashMap;
+import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
 public class metrics4 {
@@ -11,10 +13,14 @@ public class metrics4 {
     protected LinkedHashMap<String, String> startExecTime = new LinkedHashMap<>();
     protected LinkedHashMap<String, String> endExecTime = new LinkedHashMap<>();
     protected LinkedHashMap<String, String> noEndExecTime = new LinkedHashMap<>();
+    LinkedHashMap<String, Long> execTime = new LinkedHashMap<>();
+
 
     //constructor
     public metrics4(){
         generateTime();
+        AvgExecTime();
+
     }
     //parse start time, end time, and noEndTimeExecution into LinkedHashMap
     public void generateTime(){
@@ -54,11 +60,26 @@ public class metrics4 {
         }
     }
 
+
+    public void AvgExecTimeWithTime(){
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Enter Start Date Time: ");
+        String startDate = sc.nextLine();
+        String startDateTime = formatDateTime(startDate);
+        System.out.println("Enter End Date Time: ");
+        String endDate = sc.nextLine();
+        String endDateTime = formatDateTime(endDate);
+
+
+
+
+
+    }
     //startTime minus endTime
-    public void findExecTime(){
+    public void AvgExecTime(){
         LinkedHashMap<String, String> startExecTime = getStartExecTime();
         LinkedHashMap<String, String> endExecTime = getEndExecTime();
-        LinkedHashMap<String, Long> execTime = new LinkedHashMap<>();
+
 
         for(String code: startExecTime.keySet()){
             if(endExecTime.containsKey(code)) {
@@ -67,28 +88,53 @@ public class metrics4 {
 
                 long milliseconds = Duration.between(startTime, endTime).toMillis();
 
-                execTime.put(code, milliseconds);
+                this.execTime.put(code, milliseconds);
 
             }
         }
-        long totalTime = 0;
-        for (String code: execTime.keySet()){
-            totalTime += execTime.get(code);
-        }
-        totalTime /= execTime.size();
-        long hours = TimeUnit.MILLISECONDS.toHours(totalTime);
 
+
+
+
+    }
+
+    public void displayAvgExecTime(){
+        long totalTime = 0;
+        for (String code: getExecTime().keySet()){
+            totalTime += getExecTime().get(code);
+        }
+        totalTime /= getExecTime().size();
+        long hours = TimeUnit.MILLISECONDS.toHours(totalTime);
         System.out.printf("JobID\t\tExecution Time (milliseconds)\n");
-        for(String code: execTime.keySet()){
-            System.out.printf("%s\t\t%s\n", code, execTime.get(code));
+        for(String code: getExecTime().keySet()){
+            System.out.printf("%s\t\t%s\n", code, getExecTime().get(code));
         }
         System.out.println("Average execution time: "+ hours);
         System.out.println("Number of jobs with execution start time:"+getStartExecTime().size());
         System.out.println("Number of jobs with execution end time: "+getEndExecTime().size());
         System.out.println("Number of jobs that do not have execution end time: "+getNoEndExecTime().size());
-        System.out.println("Number of jobs that has execution time: "+execTime.size());
+        System.out.println("Number of jobs that has execution time: "+getExecTime().size());
     }
 
+
+    public void findExecTimeByJobID(){
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Enter the jobID: ");
+        String jobID = sc.nextLine();
+        while(!jobID.equals("-1")){
+            if(getExecTime().containsKey(jobID)){
+                System.out.printf("%s\t\t%s\n", jobID, getExecTime().get(jobID));
+            }
+            else{
+                System.out.println("the jobID is not invalid or does not have execution time");
+
+            }
+            System.out.println("Enter the jobID: ");
+            jobID = sc.nextLine();
+        }
+
+
+    }
     //convert string to LocalDateTime
     public LocalDateTime processTime(String s){
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
@@ -97,6 +143,25 @@ public class metrics4 {
         return ldt;
     }
 
+    public String formatDateTime(String s){
+        if(s.contains("T")){
+            s = s.replace('T', ' ');
+            //2022-12-16 00
+        }
+        if(!s.contains(" ")){
+            s += " 00:00:00.000";
+        }
+        else if(s.length() == 13){
+            s += ":00:00.000";
+        }
+        else if(s.length() == 16){
+            s += ":00.000";
+        }
+        else if(s.length() == 19){
+            s += ".000";
+        }
+        return s;
+    }
 
 
     //getter method
@@ -110,6 +175,10 @@ public class metrics4 {
     //getter method
     public LinkedHashMap<String, String> getNoEndExecTime(){
         return this.noEndExecTime;
+    }
+
+    public LinkedHashMap<String, Long> getExecTime(){
+        return this.execTime;
     }
 
 }

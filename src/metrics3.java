@@ -7,7 +7,7 @@ import java.util.LinkedHashMap;
 public class metrics3 {
 
     public metrics3(){
-        findError();
+
     }
     public void findError(){
         try{
@@ -46,7 +46,7 @@ public class metrics3 {
                 System.out.printf("%-20s\t\t%s\n", code, userList.get(code));
             }
 
-            System.out.printf("The total jobs that has error is: %s", totalJobs);
+            System.out.printf("The total jobs that has error is: %s\n", totalJobs);
         }
         catch(FileNotFoundException e){
             System.out.println(e);

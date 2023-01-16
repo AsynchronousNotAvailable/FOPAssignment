@@ -2,11 +2,10 @@ import java.util.Scanner;
 import java.io.*;
 import java.util.Arrays;
 import java.util.Map;
-import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-public class xuejou {
-    public static void main(String[] args) {
+public class metrics5 {
+    public void findErrorType(){
         int cntAccessQos=0,cntIvdQos=0,cntSV=0,cntLookupFailure=0,cntIvdNode=0,cntRqJobId=0,cntNodeUMHPC=0,cntNode15=0,cntNode13=0,cntNode12=0,cntSTimeout=0,cntLaunchF=0,cntSetupF=0,cntIvdJobId=0,cntZeroBytes=0,cntKillTaskF=0,cntTresRunSecs=0,cntCPUCnt=0,cntNotExecveJob=0,cntAbortingJobId=0,cntSocketTimedOut=0,cntGresUdf=0,cntUserNotFound=0,cntXConfigureGrpTraining=0,cntJobAdy=0;
         System.out.println("Error: does not have access to qos");
         System.out.println("Username       Number of Error");
