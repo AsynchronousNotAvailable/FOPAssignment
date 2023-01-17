@@ -7,5 +7,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module" module-name="jfreechart-1.0.19" />
+    <orderEntry type="library" name="lib" level="project" />
   </component>
 </module>

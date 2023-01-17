@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/FOPAssignment.iml" filepath="$PROJECT_DIR$/FOPAssignment.iml" />
+      <module fileurl="file://$USER_HOME$/Downloads/jfreechart-1.0.19/jfreechart-1.0.19.iml" filepath="$USER_HOME$/Downloads/jfreechart-1.0.19/jfreechart-1.0.19.iml" />
     </modules>
   </component>
 </project>

@@ -35,7 +35,7 @@ public class metrics2 {
 
     public void findJobIDByPartition(){
         Scanner sc = new Scanner(System.in);
-        System.out.println("Enter the partition, Enter '1', '2', '3', '4', '5', '6' to select partition ");
+        System.out.println("Enter the partition, Enter '1', '2', '3', '4', '5', '6' to select partition, '-1' to exit to main menu");
         System.out.println("List Of Partition: ");
         System.out.println("Partition 1. CPU-EPYC");
         System.out.println("Partition 2: CPU-Opteron");
@@ -71,12 +71,23 @@ public class metrics2 {
                 }
             }
 
+            System.out.println("Enter the partition, Enter '1', '2', '3', '4', '5', '6' to select partition '-1' to exit to main menu");
+            System.out.println("List Of Partition: ");
+            System.out.println("Partition 1. CPU-EPYC");
+            System.out.println("Partition 2: CPU-Opteron");
+            System.out.println("Partition 3: GPU-V100s");
+            System.out.println("Partition 4: GPU-K40c");
+            System.out.println("Partition 5: GPU-Titan");
+            System.out.println("Partition 6: GPU-K10");
+            choose = sc.nextLine();
+
 
 
 
 
         }
-        System.exit(0);
+
+
 
     }
     //enter jobId, output its partition
@@ -85,6 +96,7 @@ public class metrics2 {
         System.out.println("Enter the jobID, -1 to exit to exit to main menu");
         Scanner sc = new Scanner(System.in);
         String jobID = sc.nextLine();
+
 
         while(!jobID.equals("-1")){
             if(getPartitionList().containsKey(jobID)){

@@ -1,3 +1,5 @@
+import Extract.OpenFile;
+
 import java.io.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -12,7 +14,7 @@ public class metrics1 {
     //instance variables
     public LinkedHashMap<String, LocalDateTime[]> startLdtWithJobId = new LinkedHashMap<>();
     public LinkedHashMap<String, LocalDateTime[]> endLdtWithJobId = new LinkedHashMap<>();
-
+    public String startDate; public String endDate;
 
     //constructor
     //once this object of this class is called, it will invoke the processTime() method.
@@ -22,13 +24,14 @@ public class metrics1 {
 
     //this method allows user to input start time and end time, generating jobIDs being created and ended within the time range given
     public void processTime() {
+
         Scanner sc = new Scanner(System.in);
         System.out.println("Enter Start Date Time: ");
         String startDate = sc.nextLine();
-        String startDateTime = formatDateTime(startDate);
+        this.startDate = formatDateTime(startDate);
         System.out.println("Enter End Date Time: ");
         String endDate = sc.nextLine();
-        String endDateTime = formatDateTime(endDate);
+        this.endDate = formatDateTime(endDate);
         try {
             BufferedReader inputStream = new BufferedReader(new FileReader("./data/extracted_log.txt"));
             String dummy;
@@ -37,7 +40,7 @@ public class metrics1 {
                 if (dummy.contains("sched: Allocate")) {
                     String unprocessedTime = dummy.split(" ")[0].substring(1, dummy.split(" ")[0].length() - 1);
                     LocalDateTime processedTime = convertToLDT(formatDateTime(unprocessedTime));
-                    if (processedTime.isAfter(convertToLDT(startDateTime)) && processedTime.isBefore(convertToLDT(endDateTime))) {
+                    if (processedTime.isAfter(convertToLDT(this.startDate)) && processedTime.isBefore(convertToLDT(this.endDate))) {
                         array[0] = processedTime;
                         String jobID = dummy.split(" ")[3].substring(6);
                         this.startLdtWithJobId.put(jobID, array);
@@ -48,7 +51,7 @@ public class metrics1 {
                 if (dummy.contains("WEXITSTATUS")) {
                     String unprocessedTime = dummy.split(" ")[0].substring(1, dummy.split(" ")[0].length() - 1);
                     LocalDateTime processedTime = convertToLDT(formatDateTime(unprocessedTime));
-                    if (processedTime.isAfter(convertToLDT(startDateTime)) && processedTime.isBefore(convertToLDT(endDateTime))) {
+                    if (processedTime.isAfter(convertToLDT(this.startDate)) && processedTime.isBefore(convertToLDT(this.endDate))) {
                         array[1] = processedTime;
                         String jobID = dummy.split(" ")[2].substring(6);
                         if (this.startLdtWithJobId.containsKey(jobID)) {
@@ -256,5 +259,13 @@ public class metrics1 {
 
         LocalDateTime ldt = LocalDateTime.parse(s, formatter);
         return ldt;
+    }
+
+    public String getStartDate(){
+        return this.startDate;
+    }
+
+    public String getEndDate(){
+        return this.endDate;
     }
 }
