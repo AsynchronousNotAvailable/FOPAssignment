@@ -1,0 +1,26 @@
+Total number of errors caused by "does not have access to qos:" 143
+------------------------------------------------------------------Types of error                               Numbers of error
+Invalid qos                                  14        
+Security violation                           15        
+Lookup failure for node                      62        
+Invalid node specified                       61        
+Requeue of JobId                             7         
+Nodes UMHPC not responding                   7         
+Nodes CPU15 not responding                   13        
+Nodes CPU13 not responding                   4         
+Nodes CPU12 not responding                   5         
+Socket timed out                             67        
+Profog launch failure                        1         
+Prolog or job env setup failure              1         
+Invalid jobId specified                      50        
+Zero bytes are transmitted or received       5         
+Kill tasked failed                           4         
+Used tres run secs underflow                 15        
+Configured cpu count change                  1         
+Slurmd could not execve job                  3         
+Aborting jobId                               1         
+Socket timed out on send/recv operation      67        
+Gres count underflow                         64        
+User 548300548 not found                     50        
+Could not find configured group training     1         
+Job/step already completing or completed     30        

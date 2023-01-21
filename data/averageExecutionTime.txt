@@ -1,0 +1,24 @@
+JobID		Execution Time (milliseconds)
+45638		598718
+45639		2911533
+45628		7767
+45629		730
+46210		12573
+46214		12128
+46225		11360263
+46227		7049544
+46228		1988324
+46229		1454704
+46230		1430956
+46232		19824580
+46231		1572011
+46234		1432
+46239		2326
+46240		1766
+46241		24484
+46242		20076
+Average execution time: 0.0
+Number of jobs with execution start time from 2022-07-13 00:00:00.000 to 2022-07-13 10:11:11.111 is 23
+Number of jobs with execution end time: 24
+Number of jobs that do not have execution end time: 1762
+Number of jobs that has execution time: 18
