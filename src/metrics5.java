@@ -1,3 +1,5 @@
+import Extract.OpenFile;
+
 import java.util.Scanner;
 import java.io.*;
 import java.util.Arrays;
@@ -98,33 +100,6 @@ public class metrics5 {
             String[] arrayName=ErrorJobName.split(" ");
             Map<String, Long>duplicateCount =Arrays.stream(arrayName).collect(Collectors.groupingBy(Function.identity(),Collectors.counting()));
             duplicateCount.forEach((key,value) -> System.out.printf("%-15s%15s\n",key,value));
-            System.out.println("Total number of errors caused by \"does not have access to qos:\" "+cntAccessQos);
-            System.out.println("------------------------------------------------------------------");
-            System.out.printf("%-45s%-10s\n","Types of error","Numbers of error");
-            System.out.printf("%-45s%-10d\n","Invalid qos",cntIvdQos);
-            System.out.printf("%-45s%-10d\n","Security violation",cntSV);
-            System.out.printf("%-45s%-10d\n","Lookup failure for node",cntLookupFailure);
-            System.out.printf("%-45s%-10d\n","Invalid node specified",cntIvdNode);
-            System.out.printf("%-45s%-10d\n","Requeue of JobId",cntRqJobId);
-            System.out.printf("%-45s%-10d\n","Nodes UMHPC not responding",cntNodeUMHPC);
-            System.out.printf("%-45s%-10d\n","Nodes CPU15 not responding",cntNode15);
-            System.out.printf("%-45s%-10d\n","Nodes CPU13 not responding",cntNode13);
-            System.out.printf("%-45s%-10d\n","Nodes CPU12 not responding",cntNode12);
-            System.out.printf("%-45s%-10d\n","Socket timed out",cntSTimeout);
-            System.out.printf("%-45s%-10d\n","Profog launch failure",cntLaunchF);
-            System.out.printf("%-45s%-10d\n","Prolog or job env setup failure",cntSetupF);
-            System.out.printf("%-45s%-10d\n","Invalid jobId specified",cntIvdJobId);
-            System.out.printf("%-45s%-10d\n","Zero bytes are transmitted or received",cntZeroBytes);
-            System.out.printf("%-45s%-10d\n","Kill tasked failed",cntKillTaskF);
-            System.out.printf("%-45s%-10d\n","Used tres run secs underflow",cntTresRunSecs);
-            System.out.printf("%-45s%-10d\n","Configured cpu count change",cntCPUCnt);
-            System.out.printf("%-45s%-10d\n","Slurmd could not execve job",cntNotExecveJob);
-            System.out.printf("%-45s%-10d\n","Aborting jobId",cntAbortingJobId);
-            System.out.printf("%-45s%-10d\n","Socket timed out on send/recv operation",cntSocketTimedOut);
-            System.out.printf("%-45s%-10d\n","Gres count underflow",cntGresUdf);
-            System.out.printf("%-45s%-10d\n","User 548300548 not found",cntUserNotFound);
-            System.out.printf("%-45s%-10d\n","Could not find configured group training",cntXConfigureGrpTraining);
-            System.out.printf("%-45s%-10d\n","Job/step already completing or completed",cntJobAdy);
 
 
 
@@ -132,6 +107,46 @@ public class metrics5 {
         }catch(FileNotFoundException e){
             System.out.println("File was not found.");
         }
+
+        try{
+            PrintWriter outputStream = new PrintWriter(new File("./data/typesOfError.txt"));
+            outputStream.write("Total number of errors caused by \"does not have access to qos:\" "+cntAccessQos);
+            outputStream.write("\n------------------------------------------------------------------");
+            outputStream.write(String.format("%-45s%-10s\n","Types of error","Numbers of error"));
+            outputStream.write(String.format("%-45s%-10d\n","Invalid qos",cntIvdQos));
+            outputStream.write(String.format("%-45s%-10d\n","Security violation",cntSV));
+            outputStream.write(String.format("%-45s%-10d\n","Lookup failure for node",cntLookupFailure));
+            outputStream.write(String.format("%-45s%-10d\n","Invalid node specified",cntIvdNode));
+            outputStream.write(String.format("%-45s%-10d\n","Requeue of JobId",cntRqJobId));
+            outputStream.write(String.format("%-45s%-10d\n","Nodes UMHPC not responding",cntNodeUMHPC));
+            outputStream.write(String.format("%-45s%-10d\n","Nodes CPU15 not responding",cntNode15));
+            outputStream.write(String.format("%-45s%-10d\n","Nodes CPU13 not responding",cntNode13));
+            outputStream.write(String.format("%-45s%-10d\n","Nodes CPU12 not responding",cntNode12));
+            outputStream.write(String.format("%-45s%-10d\n","Socket timed out",cntSTimeout));
+            outputStream.write(String.format("%-45s%-10d\n","Profog launch failure",cntLaunchF));
+            outputStream.write(String.format("%-45s%-10d\n","Prolog or job env setup failure",cntSetupF));
+            outputStream.write(String.format("%-45s%-10d\n","Invalid jobId specified",cntIvdJobId));
+            outputStream.write(String.format("%-45s%-10d\n","Zero bytes are transmitted or received",cntZeroBytes));
+            outputStream.write(String.format("%-45s%-10d\n","Kill tasked failed",cntKillTaskF));
+            outputStream.write(String.format("%-45s%-10d\n","Used tres run secs underflow",cntTresRunSecs));
+            outputStream.write(String.format("%-45s%-10d\n","Configured cpu count change",cntCPUCnt));
+            outputStream.write(String.format("%-45s%-10d\n","Slurmd could not execve job",cntNotExecveJob));
+            outputStream.write(String.format("%-45s%-10d\n","Aborting jobId",cntAbortingJobId));
+            outputStream.write(String.format("%-45s%-10d\n","Socket timed out on send/recv operation",cntSocketTimedOut));
+            outputStream.write(String.format("%-45s%-10d\n","Gres count underflow",cntGresUdf));
+            outputStream.write(String.format("%-45s%-10d\n","User 548300548 not found",cntUserNotFound));
+            outputStream.write(String.format("%-45s%-10d\n","Could not find configured group training",cntXConfigureGrpTraining));
+            outputStream.write(String.format("%-45s%-10d\n","Job/step already completing or completed",cntJobAdy));
+            outputStream.flush();
+            outputStream.close();
+        }
+
+        catch (IOException e){
+            System.out.println(e);
+        }
+
+        OpenFile open = new OpenFile();
+        open.showFile("./data/typesOfError.txt");
     }
 
 }

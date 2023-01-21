@@ -33,9 +33,5 @@ public class metrics2_pieChart extends JFrame {
         plot.setForegroundAlpha(0.5f);
     }
 
-    public static void main(String[] args) {
-        metrics2_pieChart chart = new metrics2_pieChart("Doughnut Chart", "Number of jobs by partitions");
-        chart.pack();
-        chart.setVisible(true);
-    }
+
 }

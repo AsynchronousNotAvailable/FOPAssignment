@@ -1,5 +1,10 @@
+import Extract.OpenFile;
+
+import javax.swing.*;
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Scanner;
 
 public class metrics2 {
@@ -14,6 +19,7 @@ public class metrics2 {
     public void generatePartitionList(){
         try{
             BufferedReader inputStream = new BufferedReader(new FileReader("./data/extracted_log.txt"));
+
             String dummy;
             while((dummy = inputStream.readLine())!= null){
                 String type;
@@ -34,16 +40,9 @@ public class metrics2 {
     }
 
     public void findJobIDByPartition(){
-        Scanner sc = new Scanner(System.in);
-        System.out.println("Enter the partition, Enter '1', '2', '3', '4', '5', '6' to select partition, '-1' to exit to main menu");
-        System.out.println("List Of Partition: ");
-        System.out.println("Partition 1. CPU-EPYC");
-        System.out.println("Partition 2: CPU-Opteron");
-        System.out.println("Partition 3: GPU-V100s");
-        System.out.println("Partition 4: GPU-K40c");
-        System.out.println("Partition 5: GPU-Titan");
-        System.out.println("Partition 6: GPU-K10");
-        String choose = sc.nextLine();
+
+        String choose = JOptionPane.showInputDialog("Enter the partition, Enter '1', '2', '3', '4', '5', '6' to select partition, " +
+                "'-1' to exit to main menu\nList Of Partition: \nPartition 1. CPU-EPYC\nPartition 2: CPU-Opteron\nPartition 3: GPU-V100s\nPartition 4: GPU-K40c\nPartition 5: GPU-Titan\nPartition 6: GPU-K10\n");
 
         while(!choose.equals("-1")){
             String translate= "";
@@ -60,26 +59,35 @@ public class metrics2 {
             }else if(choose.equals("6")){
                 translate = "gpu-k10";
             }else{
-                System.out.println("Wrong input");
+                JOptionPane.showMessageDialog(null, "Wrong input");
             }
 
-            System.out.println("Partition type: " + translate);
 
-            for(String code: getPartitionList().keySet()){
-                if(getPartitionList().get(code).equals(translate)){
-                    System.out.printf("%s\t\t%s\n",code, getPartitionList().get(code));
+            try{
+                OpenFile open = new OpenFile();
+                PrintWriter outputStream = new PrintWriter(new FileWriter(String.format("./data/%s.txt", translate)));
+                outputStream.write("Job ID\t\tPartition Type\n");
+                for(String code: getPartitionList().keySet()){
+                    if(getPartitionList().get(code).equals(translate)){
+                        outputStream.write(String.format("%s\t\t%s\n",code, getPartitionList().get(code)));
+                        outputStream.flush();
+                    }
                 }
+
+                outputStream.close();
+                open.showFile(String.format("./data/%s.txt", translate));
+            }
+            catch (IOException e){
+                System.out.println(e);
             }
 
-            System.out.println("Enter the partition, Enter '1', '2', '3', '4', '5', '6' to select partition '-1' to exit to main menu");
-            System.out.println("List Of Partition: ");
-            System.out.println("Partition 1. CPU-EPYC");
-            System.out.println("Partition 2: CPU-Opteron");
-            System.out.println("Partition 3: GPU-V100s");
-            System.out.println("Partition 4: GPU-K40c");
-            System.out.println("Partition 5: GPU-Titan");
-            System.out.println("Partition 6: GPU-K10");
-            choose = sc.nextLine();
+
+
+
+
+            choose = JOptionPane.showInputDialog("Enter the partition, Enter '1', '2', '3', '4', '5', '6' to select partition, " +
+                    "'-1' to exit to main menu\nList Of Partition: \nPartition 1. CPU-EPYC\nPartition 2: CPU-Opteron\nPartition 3: GPU-V100s\nPartition 4: GPU-K40c\nPartition 5: GPU-Titan\nPartition 6: GPU-K10\n");
+
 
 
 
@@ -93,28 +101,30 @@ public class metrics2 {
     //enter jobId, output its partition
     public void findPartitionByJobID(){
         generatePartitionList();
-        System.out.println("Enter the jobID, -1 to exit to exit to main menu");
-        Scanner sc = new Scanner(System.in);
-        String jobID = sc.nextLine();
+        String jobID = JOptionPane.showInputDialog("Enter the jobID, -1 to exit to exit to main menu");
 
 
         while(!jobID.equals("-1")){
             if(getPartitionList().containsKey(jobID)){
-                System.out.println("Job ID\t\tPartition Type");
-                System.out.printf("%s\t\t%s\n", jobID, getPartitionList().get(jobID));
+                String output = String.format("%s\t\t%s\n", jobID, getPartitionList().get(jobID));
+                JOptionPane.showMessageDialog(null, output);
             }
             else{
-                System.out.println("No Such Job ID");
+                JOptionPane.showMessageDialog(null, "No Such Job ID");
+
             }
-            System.out.println("Enter the jobID: -1 to exit to main menu");
-            jobID = sc.nextLine();
+
+            jobID = JOptionPane.showInputDialog("Enter the jobID, -1 to exit to exit to main menu");
         }
 
     }
     //this method will generate the number of jobs by partition
     public void generateNumJobByPartition(){
         try{
+
             BufferedReader inputStream = new BufferedReader(new FileReader("./data/extracted_log.txt"));
+
+
             String dummy;
             String partition;
 
@@ -133,9 +143,13 @@ public class metrics2 {
 
 
             System.out.printf("Partition Type\t\tNumber of Jobs\n");
+
             for(String code: getNumJobByPartitionList().keySet()){
-                System.out.printf("%-14s\t\t%s\n", code, this.numJobByPartitionList.get(code));
+                System.out.printf("%-13s\t\t\t%s\n", code, getNumJobByPartitionList().get(code));
+
             }
+
+
         }
         catch (FileNotFoundException e){
             System.out.println(e);
@@ -143,6 +157,23 @@ public class metrics2 {
         catch (IOException e){
             System.out.println(e);
         }
+
+
+        try{
+            PrintWriter outputStream = new PrintWriter(new File("./data/PartitionList.txt"));
+            outputStream.write("Partition Type\t\tNumber of Jobs\n");
+            for(String code: getNumJobByPartitionList().keySet()){
+                outputStream.write(String.format("%-13s\t\t\t%s\n", code, getNumJobByPartitionList().get(code)));
+
+            }
+            outputStream.flush();
+            outputStream.close();
+        }
+        catch (IOException e){
+            System.out.println(e);
+        }
+        OpenFile file = new OpenFile();
+        file.showFile("./data/PartitionList.txt");
     }
 
 

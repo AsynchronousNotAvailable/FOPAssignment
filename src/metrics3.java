@@ -1,13 +1,12 @@
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import Extract.OpenFile;
+
+import java.io.*;
 import java.util.LinkedHashMap;
 
 public class metrics3 {
+    public LinkedHashMap<String, Integer>userList = new LinkedHashMap<>();
 
     public metrics3(){
-
     }
     public void findError(){
         try{
@@ -15,7 +14,6 @@ public class metrics3 {
             String dummy;
             String [] errorArr;
             int totalJobs = 0;
-            LinkedHashMap<String, Integer> userList = new LinkedHashMap<>();
             while((dummy = inputStream.readLine())!= null){
                 if(dummy.contains("error")){
 //                    if(dummy.contains("user=")){
@@ -26,11 +24,11 @@ public class metrics3 {
                         if(errorArr[i].contains("user=")){
 
                             String user = errorArr[i].substring(6, errorArr[i].length()-2);
-                            if(userList.containsKey(user)){
-                                userList.put(user, userList.get(user)+1);
+                            if(this.userList.containsKey(user)){
+                                this.userList.put(user, this.userList.get(user)+1);
                             }
                             else{
-                                userList.put(user, 1);
+                                this.userList.put(user, 1);
                             }
                         }
                     }
@@ -41,12 +39,7 @@ public class metrics3 {
             }
 
 
-            for(String code: userList.keySet()){
-                totalJobs += userList.get(code);
-                System.out.printf("%-20s\t\t%s\n", code, userList.get(code));
-            }
 
-            System.out.printf("The total jobs that has error is: %s\n", totalJobs);
         }
         catch(FileNotFoundException e){
             System.out.println(e);
@@ -56,6 +49,32 @@ public class metrics3 {
         }
     }
 
+    public void displayError(){
+        try{
+            PrintWriter outputStream = new PrintWriter(new FileWriter("./data/userError.txt"));
+            int totalJobs = 0;
+            for(String code: this.userList.keySet()){
+                totalJobs += this.userList.get(code);
+                outputStream.write(String.format("%-20s\t\t%s\n", code, this.userList.get(code)));
+            }
+
+            outputStream.write(String.format("The total jobs that has error is: %s\n", totalJobs));
+
+            outputStream.flush();
+            outputStream.close();
+        }
+        catch(IOException e){
+            System.out.println(e);
+        }
+
+        OpenFile open = new OpenFile();
+        open.showFile("./data/userError.txt");
+
+    }
+
+    public LinkedHashMap<String, Integer>getUserList(){
+        return this.userList;
+    }
 }
 
 

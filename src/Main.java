@@ -1,8 +1,8 @@
 import javax.swing.*;
 import Extract.OpenFile;
+import org.jfree.ui.RefineryUtilities;
 
 
-import javax.swing.*;
 import java.util.Scanner;
 
 public class Main {
@@ -104,26 +104,46 @@ public class Main {
 
         String[] options = {"1", "2", "3", "4", "Exit"};
         var selection = JOptionPane.showOptionDialog(null, "1. Generate the following jobIDs, Start Time, End Time and Find number of jobs being created within the given time range.\n2. Find number of jobs by partition, i.e. EPYC, Opteron and GPU\n3. Number of jobs causing error the corresponding user.\n4. Average execution time of jobs", "slurm",
-                0, 3, null, options, null);
+                0, 3, null, options, options[0]);
         do {
 
             switch (selection) {
                 case 0:
                     while(selection != 2) {
-                        metrics1 obj1 = new metrics1();
+
                         String[] pick1List = {"1", "2", "Back"};
-                        var pick = JOptionPane.showOptionDialog(null, "1. Generate number of jobs created and ended within given time range: \n2. Enter jobId, check it's time stamp submission and completion status\n3. Enter partition, generate jobID that uses that partition", "Slurm",
+                        var pick = JOptionPane.showOptionDialog(null, "1. Generate number of jobs created and ended within given time range: \n2. Enter jobId, check it's time stamp submission and completion status", "Slurm",
                                 0, 3, null, pick1List, pick1List[0]);
 
                         switch (pick) {
+
                             case 0:
+                                metrics1 obj1 = new metrics1();
                                 obj1.option1();
-                                break;
+                                String[] generate1 = {"Visualize", "Back"};
+                                var show = JOptionPane.showOptionDialog(null, "Generate Scatter plot for number of jobs created and ended within time range", "Slurm",
+                                        0, 3, null, generate1, generate1[0]);
+                                switch (show){
+                                    case 0:
+                                        metrics1ScatterPlot example = new metrics1ScatterPlot("Scatter Plot");
+                                        example.pack();
+                                        RefineryUtilities.centerFrameOnScreen(example);
+                                        example.setVisible(true);
+                                        break;
+
+                                    case 1:
+                                        selection();
+                                        break;
+                                }
+
+                            break;
                             case 1:
-                                obj1.option2();
+                                metrics1 obj2 = new metrics1();
+                                obj2.option2();
                                 break;
                             case 2:
                                 selection();
+                                break;
                         }
 
                     }
@@ -132,11 +152,25 @@ public class Main {
                 case 1:
                     metrics2 obj2 = new metrics2();
                     String[] pick2List = {"1", "2", "3", "Back"};
-                    var pick2 = JOptionPane.showOptionDialog(null, "1. Generate number of jobs by partition: \nEnter jobId, find its respective partition\n", "slurm",
+                    var pick2 = JOptionPane.showOptionDialog(null, "1. Generate number of jobs by partition: \n2. Enter jobId, find its respective partition\n3. Enter JobID, show its partition", "slurm",
                             0, 3, null, pick2List, pick2List[0]);
                     switch (pick2) {
                         case 0:
                             obj2.generateNumJobByPartition();
+                            String[] generate1 = {"Visualize", "Back"};
+                            var show = JOptionPane.showOptionDialog(null, "Generate Pie Chart to show number of jobs based on partition", "Slurm",
+                                    0, 3, null, generate1, generate1[0]);
+                            switch (show){
+                                case 0:
+                                    metrics2_pieChart chart = new metrics2_pieChart("Pie Chart", "Number of jobs by partitions");
+                                    chart.pack();
+                                    chart.setVisible(true);
+                                    break;
+
+                                case 1:
+                                    selection();
+                                    break;
+                            }
                             break;
                         case 1:
                             obj2.findPartitionByJobID();
@@ -159,6 +193,23 @@ public class Main {
                     switch (pick3) {
                         case 0:
                             obj3.findError();
+                            obj3.displayError();
+                            String[] generate1 = {"Visualize", "Back"};
+                            var show = JOptionPane.showOptionDialog(null, "Generate Bar Chart to show number of job errors and its corresponding user", "Slurm",
+                                    0, 3, null, generate1, generate1[0]);
+                            switch (show){
+                                case 0:
+                                    metrics3BarChart chart = new metrics3BarChart("Job Errors Statistics",
+                                            "Number of Job Errors By its User");
+                                    chart.pack( );
+                                    RefineryUtilities.centerFrameOnScreen( chart );
+                                    chart.setVisible( true );
+                                    break;
+
+                                case 1:
+                                    selection();
+                                    break;
+                            }
                             break;
                         case 1:
                             obj5.findErrorType();
@@ -177,6 +228,23 @@ public class Main {
                     switch (pick4) {
                         case 0:
                             obj4.displayAvgExecTime();
+                            String[] generate1 = {"Visualize", "Back"};
+                            var show = JOptionPane.showOptionDialog(null, "Generate Line Graph to show average execution time from June to December", "Slurm",
+                                    0, 3, null, generate1, generate1[0]);
+                            switch (show){
+                                case 0:
+                                    SwingUtilities.invokeLater(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            new metrics4LineGraph().setVisible(true);
+                                        }
+                                    });
+                                    break;
+
+                                case 1:
+                                    selection();
+                                    break;
+                            }
                             break;
                         case 1:
                             obj4.findExecTimeByJobID();
