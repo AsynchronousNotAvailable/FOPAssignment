@@ -1,0 +1,7 @@
+Partition Type		Number of Jobs
+gpu-v100s    			588
+cpu-opteron  			4509
+gpu-k10      			428
+gpu-titan    			640
+cpu-epyc     			2756
+gpu-k40c     			295
